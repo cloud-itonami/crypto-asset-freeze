@@ -1,0 +1,1 @@
+{:schema "etzhayyim.repository/v1" :name "com-etzhayyim-app-crypto-asset-freeze" :kind :app :canonical-metadata :edn}
