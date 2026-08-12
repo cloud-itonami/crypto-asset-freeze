@@ -30,8 +30,10 @@ cd kotoba
 npm install
 ```
 
-This takes a couple of minutes on a cold npm cache — `@etzhayyim/sdk` itself has six
-further git dependencies plus `viem` and the `@atproto` packages.
+Budget real time for this. A cold-cache install measured **7 minutes** (135 packages)
+— `@etzhayyim/sdk` itself has six further git dependencies plus `viem` and the
+`@atproto` packages, and each git dependency is cloned and built. The appview install
+in step 4 is unrelated and takes seconds.
 
 <details>
 <summary><strong>If this fails with <code>EALLOWSCRIPTS</code></strong> — the one known trap</summary>
@@ -79,8 +81,10 @@ npm test          # vitest run
 ```
  Test Files  1 passed (1)
       Tests  6 passed (6)
-   Duration  330ms
+   Duration  360ms
 ```
+
+The duration varies; the two counts do not.
 
 Six tests is the whole suite. What they actually pin down:
 
