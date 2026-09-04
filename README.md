@@ -36,8 +36,11 @@ kotoba/     TypeScript reference implementation — the runnable surface
   src/      types.ts (shapes + validators), registry.ts (the eight operations)
   test/     6 tests, including the read-cap negative case
 appview/etzhayyim-wasm-crypto-asset-freeze-qjp7mjyb/
-  svelte/   SvelteKit → Cloudflare Worker; scaffold page + /xrpc/[...path] proxy
-  src/      app.ts — kotodama worker with the domain commands (see caveat below)
+  src/      app.ts — kotodama worker with the domain commands; **deployed as
+            `wrangler.jsonc` `main` since the svelte→cljs migration (2026-09-04)**
+  (cljs)    shadow-cljs.edn / deps.edn / src/cloud_itonami/crypto_asset_freeze/ + web/
+            — reagent + kotoba-ui appview UI (migrated from SvelteKit 2026-09-04);
+            `npx shadow-cljs compile app` → Build completed, 0 errors
 ```
 
 `kotoba/` exports eight operations: `recordProjection`, `listProjections`,
@@ -61,14 +64,17 @@ This repo was extracted from `etzhayyim/root` on 2026-07-19 (`migration.edn` rec
 the source tree). Two things did not survive the extraction intact, and neither is
 hidden by the build succeeding:
 
-1. **`appview/…/src/app.ts` is orphaned.** It imports
+1. **`appview/…/src/app.ts` is now the deployed worker.** It imports
    `@etzhayyim/kotodama-host-sdk`, but no `package.json` in this repo declares that
-   dependency — the appview directory has no manifest at all. The dep was hoisted by
-   the monorepo it came from. Verified 2026-08-12: the built worker
-   (`svelte/.svelte-kit/cloudflare/_worker.js`, which is what `wrangler.jsonc` points
-   `main` at) contains **zero** references to `cryptoAssetFreeze`. The appview builds
-   and deploys, but it carries the scaffold page and the XRPC proxy only — **not** the
-   domain commands in `app.ts`.
+   dependency — the dep was hoisted by the monorepo it came from. Since the
+   svelte→cljs migration (2026-09-04), `wrangler.jsonc` deploys
+   `main: ./src/app.ts` with static assets from `web/dist`, so `kotodama.jsonld`'s
+   `component.path` and the deployed program are now the same. (The audit note
+   below describes the pre-migration state and is kept as the record of why the
+   deploy target had to change: the built SvelteKit worker
+   (`svelte/.svelte-kit/cloudflare/_worker.js`) contained **zero** references to
+   `cryptoAssetFreeze` — the appview built and deployed, but it carried the
+   scaffold page and the XRPC proxy only — **not** the domain commands in `app.ts`.)
 2. **The two surfaces disagree about plaintext.** `app.ts` writes
    `wallet_addresses` and `source_case_id` as plaintext columns into
    `vertex_crypto_asset_freeze_*`. That is exactly what the tier table above forbids;

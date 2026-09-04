@@ -110,36 +110,28 @@ Exits 0 with no output. `tsconfig.json` sets `strict: true` and
 `moduleResolution: bundler`, and only covers `src/**/*.ts` — the test directory is
 typechecked by vitest at run time, not by this command.
 
-## 4. Optional — build the appview
+## 4. Optional — build the appview UI
 
-Only needed if you are working on the Cloudflare surface.
+Only needed if you are working on the appview surface. Since the svelte→cljs
+migration (2026-09-04) the UI is shadow-cljs + reagent + kotoba-ui
+(murakumo-studio構成):
 
 ```bash
-cd appview/etzhayyim-wasm-crypto-asset-freeze-qjp7mjyb/svelte
 npm install
-npm run build
+npx shadow-cljs compile app
 ```
 
-The workspace requires heavy builds to be serialised through the shared resource
-governor rather than started directly:
-
-```bash
-node <workspace-root>/scripts/resource-guard.mjs run build -- npm run build
-```
-
-The build succeeds and emits `.svelte-kit/cloudflare/_worker.js`, which is the path
-`wrangler.jsonc` names as `main`.
-
-**Expect less than the file tree suggests.** The built worker serves the scaffold page
-and the `/xrpc/[...path]` route, which proxies to the MCP router at
-`AGENTGATEWAY_MCP_ROUTER_URL`. It does **not** contain the domain commands from
-`appview/…/src/app.ts` — that file declares no dependency manifest and is not part of
-the build. Verified: `grep -c cryptoAssetFreeze .svelte-kit/cloudflare/_worker.js`
-returns `0`. See the README's *Known state* section.
+The compile must print `Build completed` with 0 errors and emits `web/dist/js/main.js`,
+which `web/index.html` loads. `wrangler.jsonc` deploys `main: ./src/app.ts` with
+static assets from `web/dist` — the same program `kotodama.jsonld` names as
+`component.path`. (Pre-migration, the SvelteKit build emitted
+`.svelte-kit/cloudflare/_worker.js`, which contained zero references to
+`cryptoAssetFreeze` — scaffold page and XRPC proxy only. That audit note is kept
+in the README's *Known state* section.)
 
 ## 5. Leave the tree clean
 
-`npm install` and `npm run build` create `node_modules/`, `package-lock.json`, and
-`.svelte-kit/`. These are listed in `.gitignore`, so `git status` should report
-nothing after following this document. If it reports something else, that is your
-change, not a build artifact.
+`npm install` and the shadow-cljs compile create `node_modules/`, `package-lock.json`,
+`.shadow-cljs/`, and `.cpcache/`. These are listed in `.gitignore`, so `git status`
+should report nothing after following this document. If it reports something else,
+that is your change, not a build artifact.

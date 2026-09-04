@@ -1,0 +1,12 @@
+{
+  "name": "crypto-asset-freeze",
+  "version": "1.0.0",
+  "description": "Blockchain transaction freeze for law enforcement — incident management, exchange freeze requests, on-chain forensic tracing, FATF Travel Rule compliance (appview UI: shadow-cljs + reagent + kotoba-ui)",
+  "main": "index.js",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
