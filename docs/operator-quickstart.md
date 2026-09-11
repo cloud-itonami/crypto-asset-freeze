@@ -118,7 +118,7 @@ migration (2026-09-04) the UI is shadow-cljs + reagent + kotoba-ui
 
 ```bash
 npm install
-npx shadow-cljs compile app
+amu compile --target wasm32-browser app
 ```
 
 The compile must print `Build completed` with 0 errors and emits `web/dist/js/main.js`,
@@ -131,7 +131,7 @@ in the README's *Known state* section.)
 
 ## 5. Leave the tree clean
 
-`npm install` and the shadow-cljs compile create `node_modules/`, `package-lock.json`,
+`npm install` and the amu compile --target wasm32-browser create `node_modules/`, `package-lock.json`,
 `.shadow-cljs/`, and `.cpcache/`. These are listed in `.gitignore`, so `git status`
 should report nothing after following this document. If it reports something else,
 that is your change, not a build artifact.
