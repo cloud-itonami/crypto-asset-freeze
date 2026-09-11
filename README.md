@@ -40,7 +40,7 @@ appview/etzhayyim-wasm-crypto-asset-freeze-qjp7mjyb/
             `wrangler.jsonc` `main` since the svelte→cljs migration (2026-09-04)**
   (cljs)    shadow-cljs.edn / deps.edn / src/cloud_itonami/crypto_asset_freeze/ + web/
             — reagent + kotoba-ui appview UI (migrated from SvelteKit 2026-09-04);
-            `npx shadow-cljs compile app` → Build completed, 0 errors
+            `amu compile --target wasm32-browser app` → Build completed, 0 errors
 ```
 
 `kotoba/` exports eight operations: `recordProjection`, `listProjections`,
